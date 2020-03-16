@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class Routes {
   static String root = "/";
+  static String login = "login";
 
   static void configureRoutes(Router router){
     router.notFoundHandler = new Handler(
