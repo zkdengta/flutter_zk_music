@@ -9,15 +9,13 @@ class CustomLogInterceptor extends LogInterceptor {
     responseHeader = true,
     responseBody = false,
     error = true,
-    logSize = 9999999,
-  }) : super(
+  }):super(
       request: request,
       requestHeader: requestHeader,
       requestBody: requestBody,
       responseHeader: responseHeader,
       responseBody: responseBody,
-      error: error,
-      logPrint: logSize);
+      error: error);
 
   @override
   void printKV(String key, Object v) {
