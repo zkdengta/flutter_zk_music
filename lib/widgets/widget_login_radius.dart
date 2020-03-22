@@ -12,7 +12,7 @@ class LoginRadiusWidget extends StatelessWidget{
       ),
       child: Container(
         padding: EdgeInsets.all(20),
-        color: Colors.white,
+        color: const Color(0xFFFAFAFA),
         child: Column(
           children: <Widget>[
             Text(
