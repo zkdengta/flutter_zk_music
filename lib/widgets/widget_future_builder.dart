@@ -4,46 +4,43 @@ import 'package:flutterzkmusic/widgets/widget_net_error.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 typedef ValueWidgetBuilder<T> = Widget Function(
-    BuildContext context,
-    T value,
+  BuildContext context,
+  T value,
 );
 
 /// FutureBuilder 简单封装，除正确返回和错误外，其他返回 小菊花
 /// 错误时返回定义好的错误 Widget，例如点击重新请求
 class CustomFutureBuilder<T> extends StatefulWidget {
-
   final ValueWidgetBuilder<T> builder;
   final Function futureFunc;
-  final Map<String,dynamic> params;
+  final Map<String, dynamic> params;
   final Widget loadingWidget;
 
-  CustomFutureBuilder({
-    @required this.futureFunc,
-    @required this.builder,
-    this.params,
-    Widget loadingWidget
-}) : loadingWidget = loadingWidget ??
-      Container(
-        alignment: Alignment.center,
-        height: ScreenUtil().setWidth(200),
-        child: CupertinoActivityIndicator(),
-      );
+  CustomFutureBuilder(
+      {@required this.futureFunc,
+      @required this.builder,
+      this.params,
+      Widget loadingWidget})
+      : loadingWidget = loadingWidget ??
+            Container(
+              alignment: Alignment.center,
+              height: ScreenUtil().setWidth(200),
+              child: CupertinoActivityIndicator(),
+            );
 
   @override
-  _CustomFutureBuilderState<T>createState() => _CustomFutureBuilderState<T>();
-
+  _CustomFutureBuilderState<T> createState() => _CustomFutureBuilderState<T>();
 }
 
-class _CustomFutureBuilderState<T> extends State<CustomFutureBuilder>{
-
-  Future <T> _future;
+class _CustomFutureBuilderState<T> extends State<CustomFutureBuilder<T>> {
+  Future<T> _future;
   String oldParams = '';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((call){
+    WidgetsBinding.instance.addPostFrameCallback((call) {
       _request();
     });
   }
@@ -53,36 +50,36 @@ class _CustomFutureBuilderState<T> extends State<CustomFutureBuilder>{
     // TODO: implement build
     return _future == null
         ? widget.loadingWidget
-        :FutureBuilder(
-      future: _future,
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-          case ConnectionState.active:
-            return widget.loadingWidget;
-          case ConnectionState.done:
-            if (snapshot.hasData) {
-              return widget.builder(context, snapshot.data);
-            } else if (snapshot.hasError) {
-              return NetErrorWidget(
-                callback: () {
-                  _request();
-                },
-              );
-            }
-        }
-        return Container();
-      },
-    );
+        : FutureBuilder(
+            future: _future,
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                case ConnectionState.active:
+                  return widget.loadingWidget;
+                case ConnectionState.done:
+                  if (snapshot.hasData) {
+                    return widget.builder(context, snapshot.data);
+                  } else if (snapshot.hasError) {
+                    return NetErrorWidget(
+                      callback: () {
+                        _request();
+                      },
+                    );
+                  }
+              }
+              return Container();
+            },
+          );
   }
 
   void _request() {
     setState(() {
-      if(widget.params == null){
+      if (widget.params == null) {
         _future = widget.futureFunc(context);
-      }else{
-        _future = widget.futureFunc(context,pasams:widget.params);
+      } else {
+        _future = widget.futureFunc(context, pasams: widget.params);
         oldParams = widget.params.values.join();
       }
     });
@@ -91,8 +88,8 @@ class _CustomFutureBuilderState<T> extends State<CustomFutureBuilder>{
   @override
   void didUpdateWidget(CustomFutureBuilder<T> oldWidget) {
     // 如果方法不一样了，那么则重新请求
-    if(oldWidget.futureFunc != widget.futureFunc){
-      WidgetsBinding.instance.addPostFrameCallback((call){
+    if (oldWidget.futureFunc != widget.futureFunc) {
+      WidgetsBinding.instance.addPostFrameCallback((call) {
         _request();
       });
     }

@@ -10,6 +10,7 @@ import 'package:flutterzkmusic/widgets/loading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'costom_log_interceptor.dart';
 import 'package:flutterzkmusic/utils/utils.dart';
+import 'package:flutterzkmusic/model/Banner.dart' as mBanner;
 
 class NetUtils {
   static Dio _dio;
@@ -60,5 +61,11 @@ class NetUtils {
       Application.getIt<NavigateService>().popAndPushNamed(Routes.login);
       Utils.showToast('登录失效，请重新登录');
     });
+  }
+
+  /// 首页 Banner
+  static Future<mBanner.Banner> getBannerData(BuildContext context) async {
+    var response = await _get(context, '/banner', params: {'type': 1},isShowLoading: false);
+    return mBanner.Banner.fromJson(response.data);
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutterzkmusic/widgets/widget_imget_text_vertical.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterzkmusic/widgets/v_empty_view.dart';
 import 'package:flutterzkmusic/application.dart';
+import 'package:flutterzkmusic/pages/home/discover_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _tabController = TabController(vsync: this, length: 4);
+    _tabController = TabController(vsync: this, length: 4,initialIndex: 1);
   }
 
   @override
@@ -77,7 +78,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 controller: _tabController,
                 children: [
                   Text('1'),
-                  Text('1'),
+                  DiscoverPage(),
                   Text('1'),
                   Text('1'),
                 ],
