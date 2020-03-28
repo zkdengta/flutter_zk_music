@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'costom_log_interceptor.dart';
 import 'package:flutterzkmusic/utils/utils.dart';
 import 'package:flutterzkmusic/model/Banner.dart' as mBanner;
+import 'package:flutterzkmusic/model/recommend.dart';
 
 class NetUtils {
   static Dio _dio;
@@ -68,4 +69,16 @@ class NetUtils {
     var response = await _get(context, '/banner', params: {'type': 1},isShowLoading: false);
     return mBanner.Banner.fromJson(response.data);
   }
+
+  /// 推荐歌单
+  static Future<RecommendData> getRecommendData(
+  BuildContext context,{
+      Map<String, dynamic> params = const {
+        'limit': 6,
+      },
+  }) async {
+    var response = await _get(context, '/personalized',params: params,isShowLoading: false);
+    return RecommendData.fromJson(response.data);
+  }
+
 }

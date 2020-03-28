@@ -2,11 +2,15 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutterzkmusic/model/Banner.dart' as prefix0;
+import 'package:flutterzkmusic/widgets/h_empty_view.dart';
 import 'package:flutterzkmusic/widgets/widget_banner.dart';
 import 'package:flutterzkmusic/widgets/widget_future_builder.dart';
 import 'package:flutterzkmusic/http/net_utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterzkmusic/widgets/v_empty_view.dart';
+import 'package:flutterzkmusic/widgets/wiget_column.dart';
+import 'package:flutterzkmusic/model/recommend.dart';
+import 'package:flutterzkmusic/widgets/widget_play_list.dart';
 
 class DiscoverPage extends StatefulWidget {
   @override
@@ -110,6 +114,39 @@ class _DiscoverPageState extends State<DiscoverPage>
     );
   }
 
+  ///推荐歌单
+  Widget _buildRecommendPlayList(){
+    return CustomFutureBuilder<RecommendData>(
+      futureFunc: NetUtils.getRecommendData,
+      builder: (context,snapshot){
+        var data = snapshot.result;
+        return Container(
+          height: ScreenUtil().setWidth(300),
+          child: ListView.separated(
+              itemBuilder: (context,index){
+                return PlayListWidget(
+                  text: data[index].name,
+                  playCount: data[index].playCount,
+                  picUrl: data[index].picUrl,
+                  maxLines: 2,
+                  onTap: (){},
+                );
+              },
+              separatorBuilder: (context,index){
+                return HEmptyView(ScreenUtil().setWidth(20));
+              },
+              padding: EdgeInsets.symmetric(
+                horizontal: ScreenUtil().setWidth(15),
+              ),
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: data.length,
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -123,41 +160,14 @@ class _DiscoverPageState extends State<DiscoverPage>
             _buildBanner(),
             VEmptyView(30),
             _buildHomeCategoryList(),
-            Padding(
-              padding: EdgeInsets.only(left: ScreenUtil().setWidth(20)),
-              child: Text('推荐歌单',style: TextStyle(fontSize: 11,color: Colors.grey),),
+            ColumnWidget(
+              title: '推荐歌单',
+              leftText: '为你精挑细选',
+              rightText: '查看更多',
+              onTap: (){},
             ),
-            Padding(
-              padding: EdgeInsets.only(left: ScreenUtil().setWidth(20),right: ScreenUtil().setWidth(20)),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      '为你精挑细选',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16
-                      ),
-                    ),
-                  ),
-                  Container(
-                      height: 22,
-                      width: 64,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 0.5), // 边色与边宽度
-                        borderRadius: BorderRadius.circular(20), // 圆角度
-                      ),
-                      child: FlatButton(
-                        padding: EdgeInsets.all(0),
-                        onPressed: (){},
-                        child: Text('查看更多',style: TextStyle(fontSize: 12,color: Colors.black87),),
-                      ),
-                  ),
-                ],
-              ),
-            ),
-            Text('--------------------------------------------------------------------------------------------')
+            VEmptyView(20),
+           _buildRecommendPlayList(),
           ],
         ),
       ),
